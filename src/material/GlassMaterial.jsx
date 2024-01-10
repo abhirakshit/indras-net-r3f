@@ -1,7 +1,7 @@
 export default function GlassMaterial() {
     return <meshPhysicalMaterial
         attach="material"
-        // color="blue"
+        color= 'white'
         roughness={0.0}
         metalness={0.0}
         opacity={0.1}

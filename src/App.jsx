@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import {useContext, useState} from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
 import './App.css'
 import Exp from "./Exp";
+import {DataProvider} from "./DataContext.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
@@ -15,10 +15,13 @@ function App() {
                 fov: 45,
                 near: 0.1,
                 far: 200,
-                position: [ - 4, 3, 6 ]
+                position: [ - 0.2, -2.0, -7.5 ]
             } }
         >
-            <Exp/>
+            <DataProvider>
+                <Exp/>
+            </DataProvider>
+
             <EffectComposer>
                 <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
                 <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
