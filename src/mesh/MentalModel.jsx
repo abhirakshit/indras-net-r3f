@@ -1,17 +1,18 @@
 import React, {createContext, useContext, useEffect, useMemo, useRef, useState} from "react";
-import {Clone, useGLTF, PivotControls, Sparkles} from "@react-three/drei";
+import {Clone, useGLTF, PivotControls, Sparkles, Wireframe} from "@react-three/drei";
 import GlassMaterial from "../material/GlassMaterial.jsx";
 import {useControls, folder, button} from "leva";
 import {useFrame} from "@react-three/fiber";
 import {Physics, RigidBody} from "@react-three/rapier";
 import {DataContext} from "../DataContext.jsx";
+import * as THREE from 'Three';
 // const ModelContext = createContext()
 
 const Controls = (props) => {
     // const {modelProperties, setModelProperties} = useContext(ModelContext);
     // console.log('ctx', props)
     const {dispatch} = useContext(DataContext);
-    useControls(`Mental Model`, {
+    useControls(`Mental Model - ${props.id}`, {
         'Title': {
             value: props.title,
             onChange: (data) => {
@@ -24,14 +25,25 @@ const Controls = (props) => {
         'Properties': folder({
             innerLight: {label: 'Inner Light', value: props.modelProperties.innerLight, min: 1, max: 10, step: 1},
             arousal: {label: 'Arousal', value: props.modelProperties.arousal, min: 1, max: 10, step: 1},
-            openness: {label: 'Openness', value: props.modelProperties.openness, options: ['Open', 'Closed', 'Partial']},
+            openness: {
+                label: 'Openness',
+                value: props.modelProperties.openness,
+                options: ['Open', 'Closed', 'Partial']
+            },
             repression: {value: props.modelProperties.repression, label: 'Repression'}
         }, {collapsed: false}),
         'Thought': folder({
             'Ruminate': button(() => {
 
             })
-        }, {collapsed:true}),
+        }, {collapsed: false}),
+        'External Thought': folder({
+            'To': {options: ['User A', 'User B']},
+            'Deception': {value: false},
+            'Start Thought': button(() => {
+
+            })
+        }, {collapsed: false}),
         'Remove Sphere': button(() => {
             console.log('delete')
             dispatch({
@@ -49,16 +61,16 @@ export default function MentalModel(props) {
 
     // console.log('Props', props)
     const model = useGLTF("./mesh/hollowSphere_05.glb");
-    // console.log(model)
+    console.log('model', model)
     const modelRef = useRef()
     const projectileRef = useRef()
     const [isSelected, setIsSelected] = useState(false)
 
-    useFrame((state, delta) => {
-        const angle = state.clock.elapsedTime
-        // console.log(Math.sin(angle) * 8)
-        projectileRef.current.position.x = Math.sin(angle) * 4
-    })
+    // useFrame((state, delta) => {
+    //     const angle = state.clock.elapsedTime
+    //     // console.log(Math.sin(angle) * 8)
+    //     projectileRef.current.position.x = Math.sin(angle) * 4
+    // })
 
     const clicked = (e) => {
         e.stopPropagation()
@@ -83,6 +95,8 @@ export default function MentalModel(props) {
 
     return (
         <>
+            {/*<Sparkles count={100} scale={1.2} size={2} speed={0.4}/>*/}
+            {/*<pointLight position={[0,0,0]} intensity={100} color="white"/>*/}
             {/*<ModelContext.Provider value={{modelProperties, setModelProperties}}>*/}
             <PivotControls
                 anchor={[0, 0, 0]}
@@ -95,37 +109,44 @@ export default function MentalModel(props) {
                 visible={false}
                 // disableScaling={false}
             >
-                <Physics debug={false}>
-                    <RigidBody
-                        type="fixed"
-                        colliders="ball"
-                        restitution={0}
-                        friction={0.7}
-                        // colliders={ false }
-                        onCollisionEnter={collisionEnter}
-                    >
-                        <group dispose={null} ref={modelRef}>
-                            <Sparkles count={50} scale={1} size={2} speed={0.4}/>
 
-                            <mesh
-                                castShadow
-                                receiveShadow
-                                geometry={model.nodes.Sphere.geometry}
-                                onClick={clicked}
-                                onPointerMissed={missed}
-                            >
-                                <pointLight position={[0, 0, 0]} intensity={10} color="#fff"/>
-                                <GlassMaterial/>
-                                <RigidBody type="fixed" colliders="ball">
-                                    <mesh visible userData={{hello: 'world'}} position={[0, 0, 0]} ref={projectileRef}>
-                                        <sphereGeometry args={[.05, 64, 64]}/>
-                                        <meshMatcapMaterial/>
-                                    </mesh>
-                                </RigidBody>
-                            </mesh>
-                        </group>
-                    </RigidBody>
-                </Physics>
+                <RigidBody
+                    gravityScale={0}
+                    colliders="ball"
+                    restitution={0}
+                    friction={0.7}
+                    // colliders={ false }
+                    onCollisionEnter={collisionEnter}
+                >
+                    <group dispose={null} ref={modelRef}>
+
+                        <mesh
+                            castShadow
+                            receiveShadow
+                            geometry={model.nodes.Sphere.geometry}
+                            onClick={clicked}
+                            onPointerMissed={missed}
+                        >
+                            <meshBasicMaterial
+                                color="white"
+                                side={THREE.DoubleSide}
+                                transparent={true}
+                                opacity={0.1}
+                            />
+                            {/*<GlassMaterial/>*/}
+                            <Sparkles count={400} scale={.9} size={1} speed={0.4} color={THREE.ColorRepresentation}/>
+                            <pointLight position={[0, 0, 0]} intensity={1000} color="red"/>
+                            {/*<RigidBody type="fixed" colliders="ball">*/}
+                            {/*    <mesh visible userData={{hello: 'world'}} position={[0, 0, 0]} ref={projectileRef}>*/}
+                            {/*        <sphereGeometry args={[.05, 64, 64]}/>*/}
+                            {/*        <meshMatcapMaterial/>*/}
+                            {/*    </mesh>*/}
+                            {/*</RigidBody>*/}
+
+                            <Wireframe/>
+                        </mesh>
+                    </group>
+                </RigidBody>
             </PivotControls>
             {isSelected &&
                 <Controls {...props}/>

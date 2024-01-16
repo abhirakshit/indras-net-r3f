@@ -6,22 +6,18 @@ import {button, useControls} from "leva"
 import MentalModel from "./mesh/MentalModel.jsx"
 import {DataContext} from "./DataContext.jsx";
 import {useFrame, useThree} from "@react-three/fiber";
+import SphereTest from "./mesh/SphereTest.jsx";
+import HollowSphere from "./mesh/HollowSphere.jsx";
+import {Physics, RigidBody} from "@react-three/rapier";
+import MergedSpheres from "./mesh/MergedSpheres.jsx";
 
 export default function Exp() {
     const {data, dispatch} = useContext(DataContext);
     const camera = useThree(state => state.camera)
-    // console.log(camera)
-
-    // useFrame(() => {
-    //     console.log('Camera Position:', camera.position);
-    //     console.log('Camera Rotation:', camera.rotation);
-    // });
 
     //Light
     const directionalLight = useRef()
     useHelper(directionalLight, THREE.DirectionalLightHelper, 1)
-
-    // const [mentalModels, dispatch] = useReducer(mentalModelReducer, initialModels)
 
     const addNewMentalModel = () => {
         console.log('add model', camera.position)
@@ -40,9 +36,14 @@ export default function Exp() {
     /**
      * Default Controls
      */
-    const {perfVisible, sunPosition} = useControls('Scene', {
+    const {perfVisible, sunPosition, background, Debug} = useControls('Scene', {
         'Add Sphere': button(addNewMentalModel),
         perfVisible: {label: 'Perf', value: false},
+        background: {
+            options: ['night', 'apartment', 'city', 'dawn', 'forest', 'sunset', 'lobby', 'park', 'studio', 'warehouse'],
+            label: 'Background'
+        },
+        'Debug': false
         // sunPosition: {value: [1, 0, 1]}
     })
 
@@ -51,19 +52,33 @@ export default function Exp() {
         <OrbitControls makeDefault/>
         <Environment
             background
-            preset="night"
+            preset={background}
         />
         {/*<Sky sunPosition={sunPosition}/>*/}
 
-        {data.map((data) => {
-            return <MentalModel
-                key={`key-${data.id}`}
-                {...data}
-            ></MentalModel>
-        })}
+        <Physics debug={Debug}>
+            {data.map((data) => {
+                // return <SphereTest  key={`key-${data.id}`}/>
+                // return <HollowSphere key={`key-${data.id}`}/>
+                return <MergedSpheres key={`key-${data.id}`}/>
 
-        {/*<GizmoHelper alignment="bottom-right" margin={[100, 100]}>*/}
-        {/*    <GizmoViewport labelColor="white" axisHeadScale={1}/>*/}
-        {/*</GizmoHelper>*/}
+                // return <MentalModel
+                //     key={`key-${data.id}`}
+                //     {...data}
+                // ></MentalModel>
+
+
+            })}
+
+            {/*<RigidBody type="fixed">*/}
+            {/*    <mesh receiveShadow position-y={-2.25}>*/}
+            {/*        <boxGeometry args={[10, 0.5, 10]}/>*/}
+            {/*        <meshStandardMaterial color="greenyellow"/>*/}
+            {/*    </mesh>*/}
+            {/*</RigidBody>*/}
+        </Physics>
+        <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
+            <GizmoViewport labelColor="white" axisHeadScale={1}/>
+        </GizmoHelper>
     </>
 }

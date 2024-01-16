@@ -3,12 +3,14 @@ import { Canvas } from '@react-three/fiber'
 import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
 import './App.css'
 import Exp from "./Exp";
+import { Leva } from 'leva'
 import {DataProvider} from "./DataContext.jsx";
 
 function App() {
 
   return (
     <>
+        <Leva hideCopyButton/>
         <Canvas
             shadows
             camera={ {
