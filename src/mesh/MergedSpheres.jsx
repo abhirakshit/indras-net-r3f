@@ -30,12 +30,14 @@ export default function MergedSpheres() {
                 <mesh geometry={mergedGeometry}>
                     <meshBasicMaterial side={THREE.DoubleSide} transparent={true} opacity={0.1}/>
                     <Sparkles count={150} scale={.9} size={1} speed={0.2}/>
-                    <RigidBody gravityScale={0} ref={bouncingBall} colliders={'ball'}>
-                        <mesh>
-                            <sphereGeometry args={[0.1, 32, 32]}/>
-                            <GlassMaterial/>
-                        </mesh>
-                    </RigidBody>
+
+                </mesh>
+            </RigidBody>
+
+            <RigidBody gravityScale={0} ref={bouncingBall} colliders={'ball'}>
+                <mesh>
+                    <sphereGeometry args={[0.1, 32, 32]}/>
+                    <GlassMaterial/>
                 </mesh>
             </RigidBody>
         </>

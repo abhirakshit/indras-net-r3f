@@ -60,12 +60,12 @@ export default function Exp() {
             {data.map((data) => {
                 // return <SphereTest  key={`key-${data.id}`}/>
                 // return <HollowSphere key={`key-${data.id}`}/>
-                return <MergedSpheres key={`key-${data.id}`}/>
+                // return <MergedSpheres key={`key-${data.id}`}/>
 
-                // return <MentalModel
-                //     key={`key-${data.id}`}
-                //     {...data}
-                // ></MentalModel>
+                return <MentalModel
+                    key={`key-${data.id}`}
+                    {...data}
+                ></MentalModel>
 
 
             })}

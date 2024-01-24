@@ -127,15 +127,15 @@ export default function MentalModel(props) {
                             onClick={clicked}
                             onPointerMissed={missed}
                         >
-                            <meshBasicMaterial
-                                color="white"
-                                side={THREE.DoubleSide}
-                                transparent={true}
-                                opacity={0.1}
-                            />
-                            {/*<GlassMaterial/>*/}
-                            <Sparkles count={400} scale={.9} size={1} speed={0.4} color={THREE.ColorRepresentation}/>
-                            <pointLight position={[0, 0, 0]} intensity={1000} color="red"/>
+                            {/*<meshBasicMaterial*/}
+                            {/*    color="white"*/}
+                            {/*    side={THREE.DoubleSide}*/}
+                            {/*    transparent={true}*/}
+                            {/*    opacity={0.1}*/}
+                            {/*/>*/}
+                            <GlassMaterial/>
+                            <Sparkles count={400} scale={1.1} size={1} speed={0.4} color={THREE.ColorRepresentation}/>
+                            {/*<pointLight position={[0, 0, 0]} intensity={1000} color="red"/>*/}
                             {/*<RigidBody type="fixed" colliders="ball">*/}
                             {/*    <mesh visible userData={{hello: 'world'}} position={[0, 0, 0]} ref={projectileRef}>*/}
                             {/*        <sphereGeometry args={[.05, 64, 64]}/>*/}
@@ -143,7 +143,7 @@ export default function MentalModel(props) {
                             {/*    </mesh>*/}
                             {/*</RigidBody>*/}
 
-                            <Wireframe/>
+                            {/*<Wireframe/>*/}
                         </mesh>
                     </group>
                 </RigidBody>
